@@ -1,21 +1,28 @@
-# Use a lightweight official Python image as the base
+# Use a lightweight official Python 3.10 image
 FROM python:3.10-slim
 
-# Set the working directory inside the container
+# Add metadata
+LABEL student="Soumya Chauhan"
+LABEL lab="Lab 1"
+
+# Define a build-time argument for the environment (default is development)
+ARG ENV=development
+ENV ENV_MODE=$ENV
+
+# Set the working directory
 WORKDIR /app
 
-# Copy the dependency file (requirements.txt) into the container
+# Copy dependencies
 COPY requirements.txt .
 
-# Install the Python dependencies using pip
-# --no-cache-dir keeps the image size small by not storing download cache
+# Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the rest of the application code into the container
+# Copy rest of the app
 COPY . .
 
-# Open port 8000 to the host machine (Flask app runs on this port)
+# Expose port 8000 for Flask
 EXPOSE 8000
 
-# Define the default command to run the app when the container starts
-CMD ["python", "main.py"]
+# Print the environment mode and run the app
+CMD echo "Starting app in $ENV_MODE mode" && python main.py
